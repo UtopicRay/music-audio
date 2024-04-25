@@ -108,17 +108,27 @@ body {
     filter: hue-rotate(200deg);
 }
 
-.playBtn{
+.musicBtn {
+    border-radius: 20px;
+    border: white solid 2px;
+    background-color: transparent;
+}
+
+.playBtn {
     font-size: 28px;
     margin: 8px 10px;
     color: var(--mainColor);
     cursor: pointer;
 }
-.playBtn:nth-child(2){
+
+.playBtn:nth-child(2) {
     font-size: 32px;
     font-weight: 400;
 }
-
+.musicControlers{
+    display: flex;
+    gap: 10px;
+}
 .mainControlers {
     cursor: pointer;
     font-size: 28px;
