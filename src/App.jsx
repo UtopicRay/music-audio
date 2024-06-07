@@ -15,27 +15,30 @@ function App() {
     songVideo: "",
   });
   const currentAudio = useRef();
-  const [isPlayingAudio, setIsPlayingAudio] = useState(true);
+  const currentVideo= useRef();
+  const [isPlayingAudio,setIsPlayingAudio]=useState(false);
   const [musicIndex, setMusicIndex] = useState(0);
   const [musicTotalLength, setMusicTotalLenght] = useState("04:54");
   const [musicCurrentTime, setMusicCurrentTime] = useState("00:00");
+  const [audioProgress, setAudioProgress] = useState(0);
 
   const handleAudio = () => {
     try {
       if (currentAudio.current.paused) {
         currentAudio.current.play();
         setIsPlayingAudio(true);
+        currentVideo.current.play();
       } else {
         currentAudio.current.pause();
-
         setIsPlayingAudio(false);
+        currentVideo.current.pause()
       }
     } catch (error) {
       console.log(error);
     }
   };
   const handlePreviusSong = () => {
-    if (musicIndex < musicAPI.length - 1) {
+    if (musicIndex <= 0) {
       let setNumber = musicAPI.length - 1;
       setMusicIndex(setNumber);
       updateCurrentMusic(setNumber);
@@ -57,21 +60,17 @@ function App() {
     }
   };
   const updateCurrentMusic = (index) => {
-    let musicObject = musicAPI[index];
-    currentAudio.current.src = musicObject.songSrc;
-    currentAudio.current.play();
+    const Song = { ...musicAPI[index] };
     setCurrentMusic({
-      songName: musicObject.songName,
-      songArtist: musicObject.songArtist,
-      songSrc: musicObject.songSrc,
-      songVideo: musicObject.songVideo,
-      songAvatar: musicObject.songAvatar,
+      songName: Song.songName,
+      songArtist: Song.songArtist,
+      songSrc: Song.songSrc,
+      songVideo: Song.songVideo,
+      songAvatar: Song.songAvatar,
     });
-
     setIsPlayingAudio(true);
   };
 
-  const [audioProgress, setAudioProgress] = useState(0);
   const handleMusicProgressBar = (e) => {
     setAudioProgress(e.target.value);
     currentAudio.current.currentTime =
@@ -107,10 +106,13 @@ function App() {
       songAvatar: musicAPI[0].songAvatar,
     });
   }, []);
+  useEffect(() => {
+    currentAudio.current.play();
+  }, [updateCurrentMusic]);
   return (
     <div className="container">
       <audio
-        src={currentMusic.songSrc}
+        src={currentMusic.songSrc?currentMusic.songSrc:'/public/music/Azumi_Takahashi_Lotus_Juice_ATLUS_Sound_Team_ATLUS_GAME_MU.mp3'}
         ref={currentAudio}
         onEnded={handleNextSong}
         onTimeUpdate={handleAudioUpdate}
@@ -120,6 +122,7 @@ function App() {
         autoPlay={true}
         muted={true}
         loop={true}
+        ref={currentVideo}
         className="backgroundVideo"
       ></video>
       <div className="blackScreen"></div>
@@ -150,7 +153,7 @@ function App() {
           <button className="musicBtn" onClick={handleAudio}>
             <img
               className="playBtn"
-              src={isPlayingAudio ? pause : play}
+              src={isPlayingAudio ? play : pause}
               alt={isPlayingAudio ? "pause-icon" : "play-icon"}
             ></img>
           </button>
